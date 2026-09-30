@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TubeToViral — YouTube 爆款视频转 X/LinkedIn 资产包一键生成工具</title>
+  <meta name="description" content="极简输入一个 YouTube 视频链接，30秒自动交付：1篇高点击率 X (Twitter) 爆款 Thread、1篇 LinkedIn 深度专业复盘长文、5条日常排期精炼金句资产包。">
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti for Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-top-left"></div>
+  <div class="ambient-glow glow-top-right"></div>
+  <div class="ambient-glow glow-center"></div>
+
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <img src="assets/logo.jpg" alt="TubeToViral Logo" class="brand-img">
+        <span class="brand-name">Tube<span class="gradient-text">ToViral</span></span>
+        <span class="badge-beta">v2.4 PRO</span>
+      </a>
+
+      <div class="nav-metrics">
+        <span class="pulse-indicator"></span>
+        <span class="metrics-text">⚡ 14,820+ 资产包已生成</span>
+      </div>
+
+      <div class="nav-actions">
+        <div class="credits-badge" id="creditsPill" title="点击查看或购买额度">
+          <span class="credits-icon">💎</span>
+          <span id="creditsCount">1 免费额度</span>
+        </div>
+        <button class="btn btn-secondary-sm" id="btnOpenPricing">
+          <span>升级额度</span>
+        </button>
+        <button class="btn-icon" id="btnOpenSettings" title="自定义 AI API 设置">
+          ⚙️
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="main-wrapper">
+    <section class="hero-section">
+      <div class="hero-badge">
+        <span class="sparkle">✨</span> 专为 Solo 创作者、创始人与出海 B2B 打造的单页爆款分发工具
+      </div>
+
+      <h1 class="hero-title">
+        粘贴 1 个 YouTube 视频<br>
+        交付 <span class="gradient-text">X / LinkedIn 爆款内容资产包</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        <strong>拒绝通用 AI 写作器的空洞废话。</strong> 不用绞尽脑汁写 Prompt，只需粘贴 1 个高价值视频（播客、访谈、演讲），
+        30 秒自动交付：<span class="text-highlight">1 篇高点击 X Thread</span> + 
+        <span class="text-highlight">1 篇 LinkedIn 深度复盘</span> + 
+        <span class="text-highlight">5 条日常排期金句</span>。
+      </p>
+
+      <!-- Input Box Container -->
+      <div class="input-card-wrapper">
+        <form class="url-input-form" id="videoForm">
+          <div class="input-glow-border">
+            <div class="input-inner">
+              <span class="input-yt-icon">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                  <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+                  <polygon fill="#FFFFFF" points="9.545,15.568 15.818,12 9.545,8.432"/>
+                </svg>
+              </span>
+              <input 
+                type="url" 
+                id="youtubeUrlInput" 
+                class="youtube-url-input" 
+                placeholder="粘贴 YouTube 视频链接 (如: https://www.youtube.com/watch?v=1-TZqOsVCN8)..." 
+                required
+                autocomplete="off"
+              >
+              <button type="submit" class="btn btn-primary" id="btnGenerate">
+                <span class="btn-text">一键生成资产包</span>
+                <span class="btn-icon">⚡</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Sample Quick Pills -->
+        <div class="sample-pills-container">
+          <span class="pills-label">👉 极速体验经典视频：</span>
+          <div class="pills-list">
+            <button type="button" class="sample-pill" data-video="naval">
+              <span class="pill-emoji">💎</span> Naval: 如何不靠运气致富
+            </button>
+            <button type="button" class="sample-pill" data-video="altman">
+              <span class="pill-emoji">🚀</span> Sam Altman: YC 创造未来指南
+            </button>
+            <button type="button" class="sample-pill" data-video="jensen">
+              <span class="pill-emoji">🦾</span> 黄仁勋: 苦难与英伟达万亿帝国
+            </button>
+            <button type="button" class="sample-pill" data-video="huberman">
+              <span class="pill-emoji">🧠</span> Huberman: 多巴胺与极限专注
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Badges -->
+      <div class="features-summary-row">
+        <div class="feature-item">
+          <span class="feat-icon">🎯</span>
+          <div class="feat-text">
+            <strong>Hook 吸引力分析</strong>
+            <p>98+ 点击率开头，破解算法冷启动</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feat-icon">💼</span>
+          <div class="feat-text">
+            <strong>LinkedIn 领袖排版</strong>
+            <p>高阶管理层口吻，结构化要点复盘</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feat-icon">📅</span>
+          <div class="feat-text">
+            <strong>5 条日常排期金句</strong>
+            <p>一键导入 Buffer / Hypefury 排期</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feat-icon">⚡</span>
+          <div class="feat-text">
+            <strong>极简冲动定价</strong>
+            <p>$9 单发买断 50 篇，无订阅陷阱</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Processing State Animation (Hidden by default) -->
+    <section class="processing-section" id="processingSection" style="display: none;">
+      <div class="processing-card">
+        <div class="radar-spinner">
+          <div class="radar-wave"></div>
+          <div class="radar-core">⚡</div>
+        </div>
+        <h3 class="processing-title" id="processingStatusText">正在智能提取 YouTube 视频高能字幕与时间轴...</h3>
+        <p class="processing-subtitle" id="processingSubtext">AI 正在深度解构播客核心论点、金句语录与高转化 Hook 框架</p>
+        
+        <div class="steps-progress-bar">
+          <div class="step-node active" id="step1">
+            <span class="step-num">1</span>
+            <span class="step-label">字幕提取</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-node" id="step2">
+            <span class="step-num">2</span>
+            <span class="step-label">认知解构</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-node" id="step3">
+            <span class="step-num">3</span>
+            <span class="step-label">X Hook 打造</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-node" id="step4">
+            <span class="step-num">4</span>
+            <span class="step-label">资产包就绪</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result Studio Section -->
+    <section class="studio-section" id="studioSection" style="display: none;">
+      <!-- Source Video Header Banner -->
+      <div class="video-meta-banner">
+        <div class="video-thumbnail-wrap">
+          <img id="videoThumb" src="" alt="Video Thumbnail" class="video-thumb-img">
+          <span class="play-overlay-badge">▶ YouTube</span>
+        </div>
+        <div class="video-info">
+          <div class="video-tags-row">
+            <span class="tag-badge" id="videoCategory">商业与认知</span>
+            <span class="tag-badge badge-green" id="videoViews">5.8M views</span>
+            <span class="tag-badge badge-blue" id="videoDuration">3h 22m</span>
+            <span class="tag-badge badge-purple" id="hookBadge">⚡ Hook 点击评分: 99/100 (逆向反差认知)</span>
+          </div>
+          <h2 class="video-title" id="videoTitle">Naval Ravikant: How to Get Rich Without Getting Lucky</h2>
+          <p class="video-author">播客来源: <span id="videoAuthor" class="author-highlight">Naval</span></p>
+        </div>
+        <div class="video-banner-actions">
+          <button class="btn btn-outline" id="btnCopyAll">
+            <span>📋 一键复制整包</span>
+          </button>
+          <button class="btn btn-primary-sm" id="btnDownloadMd">
+            <span>📥 下载 Markdown (.md)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Tabs Navigation -->
+      <div class="studio-tabs-bar">
+        <div class="tabs-group">
+          <button class="tab-btn active" data-tab="tab-x-thread" id="tabBtnX">
+            <span class="tab-icon">🐦</span>
+            <span class="tab-title">X (Twitter) 爆款 Thread</span>
+            <span class="tab-pill">7 Posts</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-linkedin" id="tabBtnLinkedin">
+            <span class="tab-icon">💼</span>
+            <span class="tab-title">LinkedIn 深度复盘长文</span>
+            <span class="tab-pill">Executive</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-quotes" id="tabBtnQuotes">
+            <span class="tab-icon">⚡</span>
+            <span class="tab-title">5 条精炼金句 / 短推</span>
+            <span class="tab-pill">日常排期</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-raw" id="tabBtnRaw">
+            <span class="tab-icon">📝</span>
+            <span class="tab-title">纯文本全貌 (Raw)</span>
+          </button>
+        </div>
+
+        <div class="tab-extra-actions">
+          <button class="btn-text-action" id="btnTogglePreviewMode" title="模拟免费预览/完整解锁模式">
+            <span id="previewModeLabel">👁️ 预览模式: 完整解锁</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Tab Contents -->
+      <div class="tab-contents-container">
+        
+        <!-- 1. X (Twitter) Thread Tab -->
+        <div class="tab-pane active" id="tab-x-thread">
+          <div class="pane-header">
+            <div class="pane-intro">
+              <h3>🐦 X (Twitter) 高转化 Thread</h3>
+              <p>采用经过数百万次测试的「反共识 Hook + 模块拆解 + 金句强化 + 互动 CTA」叙事结构。</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-outline-sm" id="btnCopyThread">
+                <span>复制整篇 Thread</span>
+              </button>
+              <button class="btn btn-x-sm" id="btnOpenInX">
+                <span>在 X 发送首推 ↗</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- X Simulator Feed Container -->
+          <div class="x-thread-simulator" id="xThreadFeed">
+            <!-- Dynamic thread items injected here -->
+          </div>
+        </div>
+
+        <!-- 2. LinkedIn Tab -->
+        <div class="tab-pane" id="tab-linkedin">
+          <div class="pane-header">
+            <div class="pane-intro">
+              <h3>💼 LinkedIn 深度专业复盘长文</h3>
+              <p>针对职业社交网络算法优化的段落排版、痛点切入、结构化提炼与精准职业 Hashtags。</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-outline-sm" id="btnCopyLinkedin">
+                <span>复制 LinkedIn 格式长文</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- LinkedIn Simulator Container -->
+          <div class="linkedin-simulator" id="linkedinCard">
+            <!-- Dynamic LinkedIn post injected here -->
+          </div>
+        </div>
+
+        <!-- 3. Quotes Tab -->
+        <div class="tab-pane" id="tab-quotes">
+          <div class="pane-header">
+            <div class="pane-intro">
+              <h3>⚡ 5 条精炼金句 / 短推文</h3>
+              <p>提炼核心认知，适合 Buffer / Hypefury / Typefully 进行周一至周五的日常内容排期。</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-outline-sm" id="btnCopyAllQuotes">
+                <span>复制全部 5 条 (排期格式)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quotes Grid Container -->
+          <div class="quotes-grid" id="quotesGrid">
+            <!-- Dynamic quote cards injected here -->
+          </div>
+        </div>
+
+        <!-- 4. Raw Markdown Tab -->
+        <div class="tab-pane" id="tab-raw">
+          <div class="pane-header">
+            <div class="pane-intro">
+              <h3>📝 纯文本 / Markdown 格式</h3>
+              <p>一键导入 Notion、Obsidian 或你的内容管理知识库。</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-outline-sm" id="btnCopyRawMarkdown">
+                <span>复制全部 Markdown</span>
+              </button>
+            </div>
+          </div>
+          <div class="markdown-preview-wrap">
+            <pre><code id="rawMarkdownContent"></code></pre>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Paywall Teaser Banner (Appears when in 30% preview mode) -->
+      <div class="paywall-overlay-card" id="paywallTeaserCard" style="display: none;">
+        <div class="paywall-lock-badge">🔒 免费体验已生成 30% 内容预览</div>
+        <h3>解锁该视频完整的 12 项爆款社交资产包</h3>
+        <p>剩余 5 条 X Thread 核心拆解、LinkedIn 完整管理层分析与 3 条排期金句已锁定。</p>
+        
+        <div class="paywall-perks-row">
+          <div class="perk-tag">✓ 完整 7 篇连贯 X Thread</div>
+          <div class="perk-tag">✓ LinkedIn 完整高管复盘</div>
+          <div class="perk-tag">✓ 5 条无损金句资产</div>
+          <div class="perk-tag">✓ 支持导出 Markdown & JSON</div>
+        </div>
+
+        <div class="paywall-cta-box">
+          <div class="price-callout">
+            <span class="deal-pill">⚡ 限时冲动购</span>
+            <span class="big-price">$9</span>
+            <span class="price-desc">买断 50 个视频额度 (折合仅 $0.18/视频)</span>
+          </div>
+          <button class="btn btn-primary btn-lg pulse-glow" id="btnUnlockPaywall">
+            <span>立即 $9 解锁 50 次额度 🚀</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricingSection">
+      <div class="section-header">
+        <span class="section-badge">极简定价策略</span>
+        <h2>为什么做 $9 Pack 模式？告别昂贵订阅陷阱</h2>
+        <p>海外独立创作者最爱极度冲动的 Micro-Pack。单发即买，即刻享受百倍内容复用回报。</p>
+      </div>
+
+      <div class="pricing-cards-grid">
+        <!-- Free Tier Card -->
+        <div class="pricing-card card-free">
+          <div class="card-tag">体验试用</div>
+          <div class="card-header">
+            <h3>免费试用</h3>
+            <p>输入任意链接，生成前 30% 预览</p>
+          </div>
+          <div class="card-price">
+            <span class="currency">$</span>
+            <span class="amount">0</span>
+            <span class="period">/ 首次体验</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> 赠送 1 次完整高价值视频资产包</li>
+            <li><span class="check">✓</span> 后续生成 30% 前瞻性内容预览</li>
+            <li><span class="check">✓</span> X Thread Hook 体验</li>
+            <li><span class="cross">✕</span> 无限次完整解锁</li>
+            <li><span class="cross">✕</span> 批量导出 Markdown / 排期包</li>
+          </ul>
+          <button class="btn btn-outline card-btn" id="btnTryFree">
+            免费体验
+          </button>
+        </div>
+
+        <!-- Micro-Pack Tier Card (Featured) -->
+        <div class="pricing-card card-featured">
+          <div class="featured-ribbon">🔥 极度推荐 • 创作者最爱</div>
+          <div class="card-tag tag-primary">冲动买断 Pack</div>
+          <div class="card-header">
+            <h3>Creator Pack (50次)</h3>
+            <p>零心理负担，单视频成本仅 $0.18</p>
+          </div>
+          <div class="card-price">
+            <span class="currency">$</span>
+            <span class="amount">9</span>
+            <span class="period">/ 50 次额度 (永久有效)</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <strong>50 个完整视频</strong> 爆款社交资产包</li>
+            <li><span class="check">✓</span> 完整 7 篇 X 爆款连推 (Thread)</li>
+            <li><span class="check">✓</span> LinkedIn 深度专业复盘长文</li>
+            <li><span class="check">✓</span> 5 条日常排期独立金句卡片</li>
+            <li><span class="check">✓</span> 支持一键导出 Markdown / Buffer 排期</li>
+            <li><span class="check">✓</span> <strong>无自动扣费月租，永久不过期</strong></li>
+          </ul>
+          <button class="btn btn-primary card-btn pulse-glow" id="btnBuyPack">
+            立即以 $9 购买 50 次额度 ⚡
+          </button>
+        </div>
+
+        <!-- Pro Unlimited Monthly -->
+        <div class="pricing-card card-pro">
+          <div class="card-tag">专业重度用户</div>
+          <div class="card-header">
+            <h3>Pro Unlimited</h3>
+            <p>适合内容营销机构与出海团队</p>
+          </div>
+          <div class="card-price">
+            <span class="currency">$</span>
+            <span class="amount">19</span>
+            <span class="period">/ 月 (随时取消)</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <strong>无限次</strong> 视频资产包转换</li>
+            <li><span class="check">✓</span> 极速独享 GPU 转录推理通道</li>
+            <li><span class="check">✓</span> 自定义专属品牌口吻与人设</li>
+            <li><span class="check">✓</span> Webhook & Zapier 自动同步排期</li>
+            <li><span class="check">✓</span> 优先支持长达 4 小时超级播客</li>
+          </ul>
+          <button class="btn btn-outline card-btn" id="btnBuyMonthly">
+            开通 $19/月 无限次
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Not Generic AI Writer Section -->
+    <section class="rationale-section">
+      <div class="rationale-card">
+        <div class="rationale-content">
+          <span class="section-badge">产品定位思考</span>
+          <h2>为什么我们不做通用 AI 写作器？</h2>
+          <div class="comparison-grid">
+            <div class="comp-box comp-bad">
+              <h4>❌ 通用 AI 写作器 (ChatGPT 等)</h4>
+              <ul>
+                <li><strong>输入成本极高：</strong> 用户面对空白输入框，根本不知道该写什么 Prompt。</li>
+                <li><strong>内容平庸空洞：</strong> 缺乏真实信息源，生成大量假大空的套话与 AI 口癖。</li>
+                <li><strong>排版不符合社交逻辑：</strong> 生成的文本又长又密，在 X 和 LinkedIn 毫无点击。</li>
+                <li><strong>复用效率低：</strong> 每次都要手动拆解并反复修正格式。</li>
+              </ul>
+            </div>
+            <div class="comp-box comp-good">
+              <h4>⚡ TubeToViral 极简资产包</h4>
+              <ul>
+                <li><strong>极简单一输入：</strong> 仅粘贴 1 个高赞 YouTube 链接，零思考门槛。</li>
+                <li><strong>站在巨人肩膀上：</strong> 深度提炼一流创始人、科学家的顶级认知，真实有料。</li>
+                <li><strong>三合一交付标准：</strong> 严格按照 X 算法 Hook、LinkedIn 排版规范与排期金句标准。</li>
+                <li><strong>开箱即发：</strong> 30 秒复制直接粘贴发布，或排期进 Hypefury / Buffer。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflow Illustration Section -->
+    <section class="workflow-preview-section">
+      <div class="workflow-card">
+        <img src="assets/hero.jpg" alt="YouTube to Social Asset Pack Workflow" class="workflow-img">
+        <div class="workflow-caption">
+          <h3>从 2 小时播客，到 10x 矩阵分发生态</h3>
+          <p>YouTube 视频输入 ➔ 智能字幕提炼 ➔ 算法级 X Thread ➔ LinkedIn 领袖专栏 ➔ 日常排期金句卡片</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <img src="assets/logo.jpg" alt="TubeToViral Logo" class="brand-img-sm">
+          <span class="brand-name">Tube<span class="gradient-text">ToViral</span></span>
+        </div>
+        <p>让每一个优质 YouTube 视频，成为你社交矩阵源源不断的爆款资产。</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-group">
+          <strong>产品交付</strong>
+          <a href="#tab-x-thread">X (Twitter) Thread</a>
+          <a href="#tab-linkedin">LinkedIn 复盘长文</a>
+          <a href="#tab-quotes">5 条排期金句</a>
+        </div>
+        <div class="link-group">
+          <strong>定价与支持</strong>
+          <a href="#pricingSection">$9 / 50 次 Pack</a>
+          <a href="#pricingSection">$19 / 月 无限次</a>
+          <a href="#" id="footerSettingsLink">API Key 接入</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 TubeToViral. Built for Global Solo Creators & Tech Founders.</p>
+    </div>
+  </footer>
+
+  <!-- Stripe-Style Checkout Modal -->
+  <div class="modal-backdrop" id="checkoutModal" style="display: none;">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="btnCloseCheckout">&times;</button>
+      
+      <div class="checkout-header">
+        <div class="checkout-brand">
+          <img src="assets/logo.jpg" alt="Logo" class="checkout-logo">
+          <div>
+            <h4>TubeToViral 结算中心</h4>
+            <p id="checkoutItemTitle">Creator Micro-Pack (50 次视频额度)</p>
+          </div>
+        </div>
+        <div class="checkout-amount" id="checkoutPriceText">$9.00</div>
+      </div>
+
+      <!-- Plan Switcher Tabs inside Checkout Modal -->
+      <div class="checkout-plan-switcher">
+        <button type="button" class="plan-tab active" id="tabPlanPack">
+          <span class="plan-tab-title">⚡ 50 次 Pack</span>
+          <span class="plan-tab-sub">$9 (买断永久)</span>
+        </button>
+        <button type="button" class="plan-tab" id="tabPlanMonthly">
+          <span class="plan-tab-title">🚀 Pro Unlimited</span>
+          <span class="plan-tab-sub">$19 / 月</span>
+        </button>
+      </div>
+
+      <div class="checkout-fast-pay">
+        <button class="btn btn-fast-pay" id="btnApplePay">
+          <span id="btnApplePayText">Pay / GPay 快捷极速结账</span>
+        </button>
+        <div class="or-divider"><span>或者使用银行卡冲动购买</span></div>
+      </div>
+
+      <form class="checkout-form" id="mockCheckoutForm">
+        <div class="form-group">
+          <label>邮箱地址 (接收收据与额度密钥)</label>
+          <input type="email" class="form-input" placeholder="creator@startup.io" value="creator@startup.io" required>
+        </div>
+        <div class="form-group">
+          <label>卡号信息</label>
+          <div class="card-input-box">
+            <input type="text" class="form-input card-num" id="checkoutCardNum" placeholder="4242 •••• •••• 4242" value="4242 8888 6666 4242" maxlength="19" required>
+            <div class="card-sub-inputs">
+              <input type="text" class="form-input" placeholder="MM/YY" value="12/28" style="width: 80px;" maxlength="5">
+              <input type="text" class="form-input" placeholder="CVC" value="888" style="width: 70px;" maxlength="4">
+            </div>
+          </div>
+        </div>
+        
+        <div class="secure-checkout-badge">
+          🔒 256-bit 军工级端到端加密 • 随时支持全额退款
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnConfirmPay">
+          <span id="btnPayLabel">立即支付 $9.00 并到账 50 次额度 ⚡</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings / Custom API Key Modal -->
+  <div class="modal-backdrop" id="settingsModal" style="display: none;">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="btnCloseSettings">&times;</button>
+      <div class="modal-header">
+        <h3>⚙️ 高级配置 (BYOK 自带 Key)</h3>
+        <p>可选：如果你有自己的 OpenAI / Gemini API Key，可直接填入免费无限次调用。</p>
+      </div>
+      <div class="form-group">
+        <label>AI 服务提供商</label>
+        <select class="form-input" id="settingProvider">
+          <option value="builtin">内置 TubeToViral 高速智能引擎 (默认无需配置)</option>
+          <option value="gemini">Google Gemini 1.5 Pro / Flash</option>
+          <option value="openai">OpenAI GPT-4o / GPT-4o-mini</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>API Key (选填，仅保存在你本地浏览器)</label>
+        <input type="password" class="form-input" id="settingApiKey" placeholder="sk-..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>输出语言偏好</label>
+        <select class="form-input" id="settingLanguage">
+          <option value="zh">中文 (简体/专为中文创作者与出海团队)</option>
+          <option value="en">English (Native X & LinkedIn Format)</option>
+          <option value="bilingual">双语对照 (Bilingual Asset Pack)</option>
+        </select>
+      </div>
+
+      <!-- Dev & Testing Sandbox for Payment -->
+      <div class="test-sandbox-card">
+        <div class="test-sandbox-header">
+          <span>🧪 付费与额度测试沙盒 (快速切换各种付费状态)</span>
+        </div>
+        <div class="test-btn-group">
+          <button type="button" class="btn btn-outline-xs" id="btnTestReset0" title="清空额度体验锁定拦截">
+            重置为 0 额度 (测锁定)
+          </button>
+          <button type="button" class="btn btn-outline-xs" id="btnTestReset1" title="恢复新手 1 次免费体验">
+            恢复 1 次免费试用
+          </button>
+          <button type="button" class="btn btn-outline-xs" id="btnTestAdd50" title="模拟充值 50 次">
+            充值 50 次额度
+          </button>
+          <button type="button" class="btn btn-outline-xs" id="btnTestSetPro" title="模拟升级无限会员">
+            设为 Pro 无限会员
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer-actions">
+        <button class="btn btn-primary btn-block" id="btnSaveSettings">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
